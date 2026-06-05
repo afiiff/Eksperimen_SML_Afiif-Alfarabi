@@ -1,0 +1,44 @@
+name: Automated Preprocessing Pipeline
+
+on:
+  push:
+    paths:
+      - 'heart_disease_uci.csv'
+      - 'preprocessing/automate_Afiif_Alfarabi.py'
+
+  workflow_dispatch:
+
+jobs:
+
+  preprocess:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          pip install pandas numpy scikit-learn
+
+      - name: Run Preprocessing
+        run: |
+          python preprocessing/automate_Afiif_Alfarabi.py
+
+      - name: Commit Processed Dataset
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Automated preprocessing update"
+          file_pattern: |
+            preprocessing/train_preprocessed.csv
+            preprocessing/test_preprocessed.csv
